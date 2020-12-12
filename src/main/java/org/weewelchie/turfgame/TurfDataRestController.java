@@ -8,7 +8,7 @@ import javax.ws.rs.core.MediaType;
 import org.jboss.resteasy.annotations.jaxrs.PathParam;
 
 @Path("/turfgame")
-public class TurfData {
+public class TurfDataRestController {
 
     @GET
     @Produces(MediaType.TEXT_PLAIN)
