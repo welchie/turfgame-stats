@@ -1,0 +1,1 @@
+curl -X POST -d '[{"name":"welchie99"}]' -H "Content-Type: application/json" https://api.turfgame.com/v4/users
