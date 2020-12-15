@@ -4,18 +4,26 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @XmlRootElement
+@Entity(name="user_data")
 public class UserData implements Serializable {
 
     /**
      *
      */
     private static final long serialVersionUID = -6913960696200724172L;
+
+    @Id
+    private Long userID;
     String name;
     String country;
     List<Integer> medals = new ArrayList<Integer>();
@@ -36,6 +44,7 @@ public class UserData implements Serializable {
 
     }
 
+    
     public String getName() {
         return name;
     }
@@ -154,6 +163,17 @@ public class UserData implements Serializable {
                 + ", name=" + name + ", place=" + place + ", points=" + points + ", pointsPerHour=" + pointsPerHour
                 + ", rank=" + rank + ", region=" + region + ", taken=" + taken + ", totalPoints=" + totalPoints
                 + ", uniqueZonesTaken=" + uniqueZonesTaken + ", zones=" + zones + "]";
+    }
+
+    @Id
+    @SequenceGenerator(name = "userIDSeq", sequenceName = "user_id_seq", allocationSize = 1, initialValue = 1)
+    @GeneratedValue(generator = "userID")
+    public Long getUserID() {
+        return userID;
+    }
+
+    public void setUserID(Long userID) {
+        this.userID = userID;
     }
 
    

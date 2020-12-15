@@ -9,8 +9,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.client.Invocation.Builder;
+import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -18,6 +18,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.jboss.resteasy.annotations.jaxrs.PathParam;
+import org.json.JSONObject;
 import org.weewelchie.turfgame.rest.client.User;
 import org.weewelchie.turfgame.rest.client.UserData;
 
@@ -86,6 +87,9 @@ public class TurfDataRestController {
 
         LOGGER.info("Entity JSON: " + Entity.json(response.getEntity()).toString());
 
+        JSONObject jsonObj = new JSONObject(response.getEntity());
+
+        LOGGER.info("JSON Object: " + jsonObj);
         return response.toString();
     }
 }
