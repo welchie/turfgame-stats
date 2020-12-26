@@ -1,7 +1,10 @@
 package org.weewelchie.turfgame;
 
+import java.util.List;
 import java.util.logging.Logger;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -19,14 +22,19 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.jboss.resteasy.annotations.jaxrs.PathParam;
 import org.json.JSONObject;
+import org.weewelchie.turfgame.jpa.service.UserService;
 import org.weewelchie.turfgame.rest.client.User;
 import org.weewelchie.turfgame.rest.client.UserData;
 
+@ApplicationScoped
 @Path("/turfgame")
 public class TurfDataRestController {
 
     private static Logger LOGGER = Logger.getLogger(TurfDataRestController.class.getName());
     private static String BASE_URL = "https://api.turfgame.com/";
+
+    @Inject
+    UserService userService;
 
     @GET
     @Produces(MediaType.TEXT_PLAIN)
@@ -54,18 +62,19 @@ public class TurfDataRestController {
 
         UserData turfData = null;
         try {
-            String resp = response.substring(1, response.length()-1);
-            LOGGER.fine("Resp: " +resp);
+            String resp = response.substring(1, response.length() - 1);
+            LOGGER.fine("Resp: " + resp);
             turfData = new ObjectMapper().readValue(resp, UserData.class);
 
         } catch (JsonProcessingException e) {
             LOGGER.severe("JsonProcessingException: " + e.getMessage());
         }
-        
+
         LOGGER.info("Retrieved User data: " + turfData);
 
-        return turfData;
+        // Call service layer to store data in DB
 
+        return turfData;
 
     }
 
@@ -79,7 +88,8 @@ public class TurfDataRestController {
         WebTarget target = client.target(BASE_URL + "/v4/feeds");
         Builder request = target.request(MediaType.APPLICATION_JSON);
         Response response = request.buildGet().invoke();
-        //Response response = target.request(MediaType.APPLICATION_JSON).accept(MediaType.TEXT_PLAIN_TYPE).get();
+        // Response response =
+        // target.request(MediaType.APPLICATION_JSON).accept(MediaType.TEXT_PLAIN_TYPE).get();
         LOGGER.info("Response Status: " + response.getStatus());
         LOGGER.info("Response: " + response.getEntity().toString());
 
@@ -91,5 +101,12 @@ public class TurfDataRestController {
 
         LOGGER.info("JSON Object: " + jsonObj);
         return response.toString();
+    }
+
+
+    @GET
+    @Path("users/all")
+    public List<UserData> getAllUsers() {
+        return userService.findAll();   
     }
 }

@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -24,19 +25,47 @@ public class UserData implements Serializable {
 
     @Id
     private Long userID;
+
+    @Column(name="user_name", nullable=false, unique = true)
     String name;
+
+    @Column(name="country")
     String country;
+
+    @Column(name="medals")
     List<Integer> medals = new ArrayList<Integer>();
+
+    @Column(name="zones")
     List<Integer> zones = new ArrayList<Integer>();
+
+    @Column(name="points_per_hour")
     Integer pointsPerHour = 0;
+
+    @Column(name="points")
     Integer points = 0;
+
+    @Column(name="total_points")
     Integer totalPoints = 0;
+
+    @Column(name="rank")
     Integer rank =0;
+
+    @Column(name="id")
     Integer id = 0;
+
+    @Column(name="place")
     Integer place = 0;
+
+    @Column(name="unique_zones_taken")
     Integer uniqueZonesTaken = 0;
+
+    @Column(name="region")
     Region region;
+
+    @Column(name="block_time")
     Integer blocktime = 0;
+
+    @Column(name="taken")
     Integer taken= 0;
 
     public UserData()
