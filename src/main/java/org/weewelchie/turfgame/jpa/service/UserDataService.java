@@ -5,6 +5,8 @@ import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
+import javax.transaction.Transactional;
 
 import org.weewelchie.turfgame.rest.client.UserData;
 
@@ -17,15 +19,17 @@ public class UserDataService implements UserService {
     @Override
     public UserData getUser(String userName) {
 
-        List<UserData> userResults;
-        userResults = em.createNamedQuery("FROM UserData s WHERE u.name= :userName", UserData.class)
-                .setParameter("userName", userName).getResultList();
+        UserData user;
 
-        return userResults.get(0);
+        Query query = em.createNamedQuery("UserData.findUserByName");
+        query.setParameter("userName", userName);
+        user = (UserData)query.getSingleResult();
+        
+        return user;
 
     }
 
-    @Override
+    @Transactional
     public void createUser(UserData user) {
         if (user != null) {
             if (!user.getName().equals("")) {

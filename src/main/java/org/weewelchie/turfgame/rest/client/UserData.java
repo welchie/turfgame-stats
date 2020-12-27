@@ -1,21 +1,28 @@
 package org.weewelchie.turfgame.rest.client;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+
 @JsonIgnoreProperties(ignoreUnknown = true)
 @XmlRootElement
-@Entity(name="user_data")
+@Entity
+@Table(name="user_data")
+@NamedQueries({
+     @NamedQuery(name = "UserData.findUserByName", query = "SELECT u FROM UserData u WHERE u.name = :userName"),
+     @NamedQuery(name = "UserData.findAll", query = "SELECT u FROM UserData u")
+})
 public class UserData implements Serializable {
 
     /**
@@ -33,10 +40,10 @@ public class UserData implements Serializable {
     String country;
 
     @Column(name="medals")
-    List<Integer> medals = new ArrayList<Integer>();
+    String medals;;
 
     @Column(name="zones")
-    List<Integer> zones = new ArrayList<Integer>();
+    String zones;
 
     @Column(name="points_per_hour")
     Integer pointsPerHour = 0;
@@ -90,19 +97,19 @@ public class UserData implements Serializable {
         this.country = country;
     }
 
-    public List<Integer> getMedals() {
+    public String getMedals() {
         return medals;
     }
 
-    public void setMedals(List<Integer> medals) {
+    public void setMedals(String medals) {
         this.medals = medals;
     }
 
-    public List<Integer> getZones() {
+    public String getZones() {
         return zones;
     }
 
-    public void setZones(List<Integer> zones) {
+    public void setZones(String zones) {
         this.zones = zones;
     }
 
