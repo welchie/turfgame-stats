@@ -1,9 +1,12 @@
 package org.weewelchie.turfgame;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.persistence.NoResultException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -75,9 +78,23 @@ public class TurfDataRestController {
         LOGGER.info("Convert to UserDataBen entitiy and store in DB");
         UserDataBean userDataBean = UserDataBean.toBean(userData);
         LOGGER.info("userDataBean: " + userDataBean);
-        //userService.createUser(userDataBean);
-        // Call service layer to store data in DB
-
+        //Check if User Exists
+        try
+        {
+            UserDataBean u = userService.getUser(userDataBean.getName());
+            //Update User
+            userDataBean.setUserID(u.getUserID());
+            LOGGER.info("Updating User: " + userDataBean.getName());
+            userService.updateUser(userDataBean);
+        }
+        catch (NoResultException e)
+        {
+            //No enitity create a new one
+            //Create new User
+            LOGGER.info("Creating a new User: " + userDataBean.getName());
+            userService.createUser(userDataBean);
+        }
+        
         return userData;
 
     }
@@ -92,8 +109,6 @@ public class TurfDataRestController {
         WebTarget target = client.target(BASE_URL + "/v4/feeds");
         Builder request = target.request(MediaType.APPLICATION_JSON);
         Response response = request.buildGet().invoke();
-        // Response response =
-        // target.request(MediaType.APPLICATION_JSON).accept(MediaType.TEXT_PLAIN_TYPE).get();
         LOGGER.info("Response Status: " + response.getStatus());
         LOGGER.info("Response: " + response.getEntity().toString());
 
@@ -108,9 +123,18 @@ public class TurfDataRestController {
     }
 
 
-    //@GET
-    //@Path("users/all")
-    //public List<UserData> getAllUsers() {
-    //    return userService.findAll();   
-    //}
+    @GET
+    @Path("users/all")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<UserData> getAllUsers() {
+
+        List<UserData> usersList = new ArrayList<UserData>();
+        List<UserDataBean> users = userService.findAll();
+        for(UserDataBean u:users)
+        {
+            usersList.add(UserDataBean.toDomain(u));
+        }
+        
+        return usersList;  
+    }
 }

@@ -6,7 +6,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.persistence.PersistenceException;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -20,7 +22,7 @@ import io.quarkus.test.junit.QuarkusTest;
 @TestInstance(Lifecycle.PER_CLASS)
 public class UserServiceTest {
 
-    @Inject 
+    @Inject
     UserService userService;
 
     private UserDataBean testUser = null;
@@ -28,39 +30,48 @@ public class UserServiceTest {
     private static int NUM_USERS = 10;
     private static String TEST_USER_NAME = "userName_";
 
-   
     @BeforeAll
-    public void setUp()
-    {
+    public void setUp() {
         testUser = new UserDataBean();
         testUser.setName(userName);
 
-        //Create some dummy Users
-        for (int i=0;i<10;i++)
-        {
-            UserDataBean u =new UserDataBean();
+        // Create some dummy Users
+        for (int i = 0; i < 10; i++) {
+            UserDataBean u = new UserDataBean();
             u.setName(TEST_USER_NAME + i);
             userService.createUser(u);
         }
 
     }
-    
+
     @Test
-    public void TestCreateUser()
-    {
+    public void TestCreateUser() {
         userService.createUser(testUser);
         UserDataBean u = userService.getUser(userName);
-        assertEquals(u.getName(),testUser.getName());
+        assertEquals(u.getName(), testUser.getName());
     }
 
     @Test
-    public void testFindAll()
-    {
+    public void testFindAll() {
         List<UserDataBean> users = userService.findAll();
         assertTrue(users.size() >= NUM_USERS);
-        for (UserDataBean u:users)
-        {
+        for (UserDataBean u : users) {
             assertTrue(u.getName().contains(TEST_USER_NAME));
         }
+    }
+
+    @Test
+    public void testAddDuplicateUser() {
+        UserDataBean testUser1 = new UserDataBean();
+        testUser1.setName(userName);
+        userService.createUser(testUser1);
+        UserDataBean u1 = userService.getUser(userName);
+        assertEquals(u1.getName(), testUser.getName());
+
+        UserDataBean testUser2 = new UserDataBean();
+        testUser2.setName(userName);
+        Assertions.assertThrows(PersistenceException.class, () -> {
+            userService.createUser(testUser2);
+        });
     }
 }

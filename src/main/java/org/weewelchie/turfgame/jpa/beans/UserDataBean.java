@@ -12,7 +12,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -29,7 +28,7 @@ import org.weewelchie.turfgame.rest.client.UserData;
 @Table(name="user_data")
 @NamedQueries({
      @NamedQuery(name = "UserDataBean.findUserByName", query = "SELECT u FROM UserDataBean u WHERE u.name = :userName"),
-     @NamedQuery(name = "UserDataBean.findAll", query = "SELECT u FROM UserDataBean u")
+     @NamedQuery(name = "UserDataBean.findAll", query = "SELECT u FROM UserDataBean u ORDER BY u.name")
 })
 public class UserDataBean implements Serializable {
 
@@ -40,6 +39,7 @@ public class UserDataBean implements Serializable {
     private static Logger LOGGER = Logger.getLogger(UserDataBean.class.getName());
 
     @Id
+    @GeneratedValue
     private Long userID;
 
     @Column(name="user_name", nullable=false, unique = true)
@@ -187,11 +187,6 @@ public class UserDataBean implements Serializable {
         this.taken = taken;
     }
 
-    
-
-    @Id
-    @SequenceGenerator(name = "userIDSeq", sequenceName = "user_id_seq", allocationSize = 1, initialValue = 1)
-    @GeneratedValue(generator = "userID")
     public Long getUserID() {
         return userID;
     }
@@ -234,7 +229,7 @@ public class UserDataBean implements Serializable {
 
         userData.setBlocktime(user.getBlocktime());
         userData.setCountry(user.getCountry());
-        //userData.setId(user.getId());
+        userData.setId(user.getId());
         userData.setName(user.getName());
 
         Region region = new Region();
@@ -259,7 +254,7 @@ public class UserDataBean implements Serializable {
         List<Integer> medalsList = new ArrayList<Integer>();
         for(String s:medalsArr)
         {
-            medalsList.add(Integer.parseInt(s));
+            medalsList.add(Integer.parseInt(s.trim()));
         }
         userData.setMedals(medalsList);
 
@@ -272,7 +267,8 @@ public class UserDataBean implements Serializable {
         List<Integer> zonesList = new ArrayList<Integer>();
         for(String s:zonesArr)
         {
-            zonesList.add(Integer.parseInt(s));
+            zonesList.add(Integer.parseInt(s.trim()
+            ));
         }
         userData.setZones(zonesList);
 
@@ -287,7 +283,7 @@ public class UserDataBean implements Serializable {
         UserDataBean userData = new UserDataBean();
         userData.setBlocktime(user.getBlocktime());
         userData.setCountry(user.getCountry());
-        //userData.setId(user.getId());
+        userData.setId(user.getId());
         userData.setMedals(user.getMedals().toString());
         userData.setName(user.getName());
         userData.setPlace(user.getPlace());
@@ -298,7 +294,6 @@ public class UserDataBean implements Serializable {
         userData.setTaken(user.getTaken());
         userData.setTotalPoints(user.getTotalPoints());
         userData.setUniqueZonesTaken(user.getUniqueZonesTaken());
-        userData.setUserID((long)user.getId());
         userData.setZones(user.getZones().toString());
 
         return userData;

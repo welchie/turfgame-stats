@@ -1,6 +1,7 @@
 package org.weewelchie.turfgame.jpa.service;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -8,6 +9,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.transaction.Transactional;
 
+import org.hibernate.Session;
 import org.weewelchie.turfgame.jpa.beans.UserDataBean;
 
 
@@ -15,12 +17,14 @@ import org.weewelchie.turfgame.jpa.beans.UserDataBean;
 @ApplicationScoped
 public class UserDataService implements UserService {
 
+    private static Logger LOGGER = Logger.getLogger(UserDataService.class.getName());
+
     @Inject
     private EntityManager em;
 
     @Override
     public UserDataBean getUser(String userName) {
-
+        LOGGER.info("Getting User: " + userName);
         UserDataBean user;
 
         Query query = em.createNamedQuery("UserDataBean.findUserByName");
@@ -36,7 +40,12 @@ public class UserDataService implements UserService {
         if (user != null) {
             if (!user.getName().equals("")) {
                 // Persiste data
-                em.persist(user);
+                LOGGER.info("Creating User: " + user.getName());
+                em.merge(user);
+                
+                //Session session = em.unwrap(Session.class);
+                //session.saveOrUpdate(user);
+                //em.persist(user);
                 em.flush();
             }
 
@@ -44,9 +53,11 @@ public class UserDataService implements UserService {
 
     }
 
-    @Override
+    @Transactional
     public UserDataBean updateUser(UserDataBean user) {
-        em.persist(user);
+        LOGGER.info("Updating User: " + user.getName() + " ID: " + user.getUserID());
+        Session session = em.unwrap(Session.class);
+        session.saveOrUpdate(user);
         em.flush();
 
         return this.getUser(user.getName());
