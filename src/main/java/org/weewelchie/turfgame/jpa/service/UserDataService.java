@@ -8,7 +8,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.transaction.Transactional;
 
-import org.weewelchie.turfgame.rest.client.UserData;
+import org.weewelchie.turfgame.jpa.beans.UserDataBean;
+
+
 
 @ApplicationScoped
 public class UserDataService implements UserService {
@@ -17,20 +19,20 @@ public class UserDataService implements UserService {
     private EntityManager em;
 
     @Override
-    public UserData getUser(String userName) {
+    public UserDataBean getUser(String userName) {
 
-        UserData user;
+        UserDataBean user;
 
-        Query query = em.createNamedQuery("UserData.findUserByName");
+        Query query = em.createNamedQuery("UserDataBean.findUserByName");
         query.setParameter("userName", userName);
-        user = (UserData)query.getSingleResult();
+        user = (UserDataBean)query.getSingleResult();
         
         return user;
 
     }
 
     @Transactional
-    public void createUser(UserData user) {
+    public void createUser(UserDataBean user) {
         if (user != null) {
             if (!user.getName().equals("")) {
                 // Persiste data
@@ -43,7 +45,7 @@ public class UserDataService implements UserService {
     }
 
     @Override
-    public UserData updateUser(UserData user) {
+    public UserDataBean updateUser(UserDataBean user) {
         em.persist(user);
         em.flush();
 
@@ -51,8 +53,8 @@ public class UserDataService implements UserService {
     }
 
     @Override
-    public List<UserData> findAll() {
-        return em.createNamedQuery("UserData.findAll", UserData.class).getResultList();
+    public List<UserDataBean> findAll() {
+        return em.createNamedQuery("UserDataBean.findAll", UserDataBean.class).getResultList();
     }
 
 }

@@ -1,6 +1,5 @@
 package org.weewelchie.turfgame;
 
-import java.util.List;
 import java.util.logging.Logger;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -22,6 +21,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.jboss.resteasy.annotations.jaxrs.PathParam;
 import org.json.JSONObject;
+import org.weewelchie.turfgame.jpa.beans.UserDataBean;
 import org.weewelchie.turfgame.jpa.service.UserService;
 import org.weewelchie.turfgame.rest.client.User;
 import org.weewelchie.turfgame.rest.client.UserData;
@@ -60,21 +60,25 @@ public class TurfDataRestController {
         String response = target.request(MediaType.APPLICATION_JSON).accept(MediaType.TEXT_PLAIN_TYPE)
                 .post(Entity.json(user.toJSON()), String.class);
 
-        UserData turfData = null;
+        UserData userData = null;
         try {
             String resp = response.substring(1, response.length() - 1);
             LOGGER.fine("Resp: " + resp);
-            turfData = new ObjectMapper().readValue(resp, UserData.class);
+            userData = new ObjectMapper().readValue(resp, UserData.class);
 
         } catch (JsonProcessingException e) {
             LOGGER.severe("JsonProcessingException: " + e.getMessage());
         }
 
-        LOGGER.info("Retrieved User data: " + turfData);
+        LOGGER.info("Retrieved User data: " + userData);
 
+        LOGGER.info("Convert to UserDataBen entitiy and store in DB");
+        UserDataBean userDataBean = UserDataBean.toBean(userData);
+        LOGGER.info("userDataBean: " + userDataBean);
+        //userService.createUser(userDataBean);
         // Call service layer to store data in DB
 
-        return turfData;
+        return userData;
 
     }
 
@@ -104,9 +108,9 @@ public class TurfDataRestController {
     }
 
 
-    @GET
-    @Path("users/all")
-    public List<UserData> getAllUsers() {
-        return userService.findAll();   
-    }
+    //@GET
+    //@Path("users/all")
+    //public List<UserData> getAllUsers() {
+    //    return userService.findAll();   
+    //}
 }

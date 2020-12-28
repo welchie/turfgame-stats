@@ -10,7 +10,7 @@ import static org.hamcrest.CoreMatchers.is;
 public class TurfDataTest {
 
     @Test
-    public void testHelloEndpoint() {
+    public void testHelloTurfGameEndpoint() {
         given()
           .when().get("/turfgame")
           .then()

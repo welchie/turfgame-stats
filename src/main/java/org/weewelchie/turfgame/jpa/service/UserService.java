@@ -2,17 +2,17 @@ package org.weewelchie.turfgame.jpa.service;
 
 import java.util.List;
 
-import org.weewelchie.turfgame.rest.client.UserData;
+import org.weewelchie.turfgame.jpa.beans.UserDataBean;
 
 public interface UserService {
 
-    public UserData getUser(String userName);
+    public UserDataBean getUser(String userName);
 
-    public void createUser(UserData user);
+    public void createUser(UserDataBean user);
 
-    public UserData updateUser(UserData user);
+    public UserDataBean updateUser(UserDataBean user);
 
-    public List<UserData> findAll();
+    public List<UserDataBean> findAll();
 
     
 }

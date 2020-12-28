@@ -11,13 +11,15 @@ public class TurfUserResourceTest {
     private static final String USER_NAME = "welchie99";
 
     @Test
-    public void testUserNameEndPoint() {
+    public void testGetUserPoint() {
         given()
             .when().get("/turfgame/user/" + USER_NAME)
             .then()
-            .statusCode(204);
-                        //.body("$.size()", is(1),
-            //        "[0].country" , is("uk")
+            .statusCode(200);
+            
+            
+            //.body("$.size()", is(1), additionalKeyMatcherPairs)
+            //.body("$.size()", is(1),"[0].country" , is("uk")
             //);
     }
 }
