@@ -220,7 +220,8 @@ public class UserDataBean implements Serializable {
                 + ", userZones=" + zones + "]";
     }
 
-    /**
+
+	/**
      * Converts JPA Entitiy to domain bean
      */
     public static UserData toDomain(UserDataBean user)

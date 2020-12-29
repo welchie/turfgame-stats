@@ -8,6 +8,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.persistence.NoResultException;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -23,7 +24,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.jboss.resteasy.annotations.jaxrs.PathParam;
-import org.json.JSONObject;
 import org.weewelchie.turfgame.jpa.beans.UserDataBean;
 import org.weewelchie.turfgame.jpa.service.UserService;
 import org.weewelchie.turfgame.rest.client.User;
@@ -46,7 +46,7 @@ public class TurfDataRestController {
     }
 
     @GET
-    @Produces(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.APPLICATION_JSON)
     @Path("/user/{userName}")
     @Consumes(MediaType.APPLICATION_JSON)
     public UserData getUser(@PathParam String userName) {
@@ -100,26 +100,55 @@ public class TurfDataRestController {
     }
 
     @GET
-    @Produces(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/user/find/{userName}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response findUser(@PathParam String userName) 
+    {
+        UserData u  = new UserData();
+        try
+        {
+            u =UserDataBean.toDomain(userService.getUser(userName));
+            return Response.ok(u).build();
+        }
+        catch (javax.persistence.NoResultException e)
+        {
+            LOGGER.severe("User: " + userName + " Not Found!");
+            return Response.noContent().build();
+        }        
+    }
+
+    @DELETE
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/user/{userName}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response removeUser(@PathParam String userName) 
+    {
+        try
+        {
+            userService.removeUser(userName);
+            return Response.ok().build();
+        }
+        catch (javax.persistence.NoResultException e)
+        {
+            LOGGER.severe("User: " + userName + " Not Found!");
+            return Response.noContent().build();
+        }        
+    }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
     @Path("/feeds")
     @Consumes(MediaType.APPLICATION_JSON)
-    public String getFeeds() {
+    public Response getFeeds() {
 
         Client client = ClientBuilder.newClient();
         WebTarget target = client.target(BASE_URL + "/v4/feeds");
         Builder request = target.request(MediaType.APPLICATION_JSON);
         Response response = request.buildGet().invoke();
         LOGGER.info("Response Status: " + response.getStatus());
-        LOGGER.info("Response: " + response.getEntity().toString());
-
-        LOGGER.info("EntrySet: " + response.getMetadata().entrySet().toString());
-
-        LOGGER.info("Entity JSON: " + Entity.json(response.getEntity()).toString());
-
-        JSONObject jsonObj = new JSONObject(response.getEntity());
-
-        LOGGER.info("JSON Object: " + jsonObj);
-        return response.toString();
+        LOGGER.info("Media Type: " + response.getMediaType());
+        return response;
     }
 
 

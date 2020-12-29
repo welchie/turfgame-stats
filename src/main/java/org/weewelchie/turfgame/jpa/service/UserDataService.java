@@ -41,11 +41,7 @@ public class UserDataService implements UserService {
             if (!user.getName().equals("")) {
                 // Persiste data
                 LOGGER.info("Creating User: " + user.getName());
-                em.merge(user);
-                
-                //Session session = em.unwrap(Session.class);
-                //session.saveOrUpdate(user);
-                //em.persist(user);
+                em.persist(user);
                 em.flush();
             }
 
@@ -66,6 +62,17 @@ public class UserDataService implements UserService {
     @Override
     public List<UserDataBean> findAll() {
         return em.createNamedQuery("UserDataBean.findAll", UserDataBean.class).getResultList();
+    }
+
+    @Transactional
+    public void removeUser(String userName) {
+        UserDataBean user = getUser(userName);
+        if (user != null)
+        {
+            LOGGER.info("Removing User: " + user.getName() + " ID: " + user.getUserID());
+            em.remove(user);
+            em.flush();
+        }
     }
 
 }

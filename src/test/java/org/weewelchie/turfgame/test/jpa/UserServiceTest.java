@@ -23,9 +23,13 @@ import io.quarkus.test.junit.QuarkusTest;
 public class UserServiceTest {
 
     @Inject
+	public
     UserService userService;
 
     private UserDataBean testUser = null;
+    private UserDataBean testUser1 = null;
+    private UserDataBean testUser2 = null;
+
     private String userName = "welchie99";
     private static int NUM_USERS = 10;
     private static String TEST_USER_NAME = "userName_";
@@ -45,7 +49,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void TestCreateUser() {
+    public void testCreateUser() {
         userService.createUser(testUser);
         UserDataBean u = userService.getUser(userName);
         assertEquals(u.getName(), testUser.getName());
@@ -62,16 +66,37 @@ public class UserServiceTest {
 
     @Test
     public void testAddDuplicateUser() {
-        UserDataBean testUser1 = new UserDataBean();
+        testUser1 = new UserDataBean();
         testUser1.setName(userName);
-        userService.createUser(testUser1);
+        Assertions.assertThrows(PersistenceException.class, () -> {
+            userService.createUser(testUser1);
+        }
+        );
         UserDataBean u1 = userService.getUser(userName);
         assertEquals(u1.getName(), testUser.getName());
 
-        UserDataBean testUser2 = new UserDataBean();
+        testUser2 = new UserDataBean();
         testUser2.setName(userName);
         Assertions.assertThrows(PersistenceException.class, () -> {
             userService.createUser(testUser2);
         });
+    }
+
+    @Test
+    public void testRemoveUser()
+    {
+        UserDataBean user = new UserDataBean();
+        user.setName(TEST_USER_NAME);
+        userService.createUser(user);
+
+        UserDataBean u = userService.getUser(TEST_USER_NAME);
+        assertTrue(u != null);
+
+        userService.removeUser(TEST_USER_NAME);
+        Assertions.assertThrows(PersistenceException.class, () -> {
+            userService.getUser(TEST_USER_NAME);
+        });
+       
+        
     }
 }

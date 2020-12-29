@@ -14,5 +14,6 @@ public interface UserService {
 
     public List<UserDataBean> findAll();
 
+    public void removeUser(String userName);
     
 }
