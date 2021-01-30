@@ -1,6 +1,7 @@
 package org.weewelchie.turfgame;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -10,6 +11,7 @@ import javax.persistence.NoResultException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.client.Client;
@@ -98,6 +100,29 @@ public class TurfDataRestController {
         return userData;
 
     }
+
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/user/addall/{users}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public List<UserData> addAll(@PathParam String users) {
+
+        //List<String> usrList = new ArrayList<String>();
+        String array1[]= users.split(",");
+        List<String> usrList = Arrays.asList(array1);
+        LOGGER.info("Users Received: " + usrList);
+        LOGGER.info("Users data count: " + usrList.size());
+        //LOGGER.info("Users received: " + users);
+        List<UserData> usersList = new ArrayList<UserData>();
+        for(String userName:usrList)
+        {
+            UserData usr = getUser(userName);
+            usersList.add(usr);
+        }
+        
+        return usersList;
+    }
+
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
