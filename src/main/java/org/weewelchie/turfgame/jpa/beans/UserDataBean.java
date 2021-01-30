@@ -255,7 +255,10 @@ public class UserDataBean implements Serializable {
         List<Integer> medalsList = new ArrayList<Integer>();
         for(String s:medalsArr)
         {
-            medalsList.add(Integer.parseInt(s.trim()));
+            if (s != "")
+            {
+                medalsList.add(Integer.parseInt(s.trim()));
+            }
         }
         userData.setMedals(medalsList);
 
@@ -268,8 +271,10 @@ public class UserDataBean implements Serializable {
         List<Integer> zonesList = new ArrayList<Integer>();
         for(String s:zonesArr)
         {
-            zonesList.add(Integer.parseInt(s.trim()
-            ));
+            if (s!= "")
+            {
+                zonesList.add(Integer.parseInt(s.trim()));
+            }
         }
         userData.setZones(zonesList);
 
