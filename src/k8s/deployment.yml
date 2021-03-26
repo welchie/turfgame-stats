@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: turfgame-stats-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: turfgame-stats
+  template:
+    metadata:
+      labels:
+        app: turfgame-stats
+    spec:
+      containers:
+      - name: turfgame-stats-pod
+        image: chriswelch99/turfgame-stats:1.0.0-SNAPSHOT
+        ports:
+        - containerPort: 8080
