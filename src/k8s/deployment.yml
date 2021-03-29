@@ -14,6 +14,8 @@ spec:
     spec:
       containers:
       - name: turfgame-stats-pod
-        image: chriswelch99/turfgame-stats:1.0.0-SNAPSHOT
+        image: chriswelch99/turfgame-stats:1.0.1-SNAPSHOT
         ports:
         - containerPort: 8080
+          protocol: TCP
+        
