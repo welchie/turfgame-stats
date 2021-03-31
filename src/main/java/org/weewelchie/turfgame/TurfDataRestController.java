@@ -178,7 +178,7 @@ public class TurfDataRestController {
 
 
     @GET
-    @Path("users/all")
+    @Path("/users/all")
     @Produces(MediaType.APPLICATION_JSON)
     public List<UserData> getAllUsers() {
 

@@ -10,6 +10,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
@@ -51,6 +52,7 @@ public class UserDataBean implements Serializable {
     @Column(name="medals")
     String medals;
 
+    @Lob
     @Column(name="zones")
     String zones;
 
@@ -271,7 +273,7 @@ public class UserDataBean implements Serializable {
         List<Integer> zonesList = new ArrayList<Integer>();
         for(String s:zonesArr)
         {
-            if (s!= "")
+            if (!s.equals(""))
             {
                 zonesList.add(Integer.parseInt(s.trim()));
             }
